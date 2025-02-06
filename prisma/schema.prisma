@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model System {
+  id Int @id @default(autoincrement())
+  name String
+
+  @@map("systems")
+  Deploy Deploy[]
+}
+
+model Person {
+  id Int @id @default(autoincrement())
+  name String
+
+  @@map("persons")
+  Deploy Deploy[]
+}
+
+model Deploy {
+  id Int @id @default(autoincrement())
+
+  type String
+
+  systemId Int @map("system_id")
+  system System @relation(fields: [systemId], references: [id])
+
+  personId Int @map("person_id")
+  person Person @relation(fields: [personId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("deploys")
+}
