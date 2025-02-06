@@ -1,5 +1,5 @@
 export interface SystemProps {
-    id : number
+    id ?: number
     name : string
 }
 
