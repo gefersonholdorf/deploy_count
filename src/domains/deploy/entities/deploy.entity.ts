@@ -1,21 +1,21 @@
 export type TypeDeploy = 'BACK-END' | 'FRONT-END'
 
 export interface DeployProps {
-    id : number
+    id ?: number
     systemId : number
     personId : number
     type : TypeDeploy
-    createdAt : Date
+    createdAt ?: Date
 }
 
 export class DeployEntity {
 
     private constructor(private props : DeployProps) {}
 
-    public static build(props : DeployProps) {
+    public static build(id : number, systemId : number, personId : number, type : TypeDeploy, createdAt : Date) {
         return new DeployEntity({
-            ...props,
-            createdAt: props.createdAt || new Date()
+            id, systemId, personId, type,
+            createdAt: createdAt || new Date()
         })
     }
 

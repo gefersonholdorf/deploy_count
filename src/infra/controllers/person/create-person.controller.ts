@@ -1,9 +1,9 @@
 import { Request, response, Response } from "express";
 import { CreatePersonService, CreatePersonUseCaseInputDto } from "../../../usecases/services/person/create-person.usecase";
-import { CreatePersonSchema } from "../../../validations/person/createPerson.schema";
-import { ZodError } from "zod";
+import { createPersonSchema } from "../../../validations/person/create-person.schema";
+import { Controller } from "../controller";
 
-export class CreatePersonController {
+export class CreatePersonController implements Controller{
 
     private constructor(private createPersonService : CreatePersonService) {
     }
@@ -16,7 +16,7 @@ export class CreatePersonController {
         const requestBody = request.body
 
         try {
-            CreatePersonSchema.parse(requestBody)
+            createPersonSchema.parse(requestBody)
         } catch (error) {
             console.log(error)
             return response.status(400).json({
@@ -32,7 +32,7 @@ export class CreatePersonController {
         try {
             await this.createPersonService.execute(body)
 
-            response.status(200).json("Pessoa cadastrada com sucesso")
+            response.status(201).json("Pessoa cadastrada com sucesso")
         } catch (error) {
             console.log(error)
             response.status(500).json('Erro ao criar Pessoa!')

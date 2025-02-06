@@ -12,9 +12,9 @@ export class CreateSystemService implements UseCase<CreateSystemInputDto, void> 
     private constructor(private repository : SystemRepository){}
 
     async execute(input: CreateSystemInputDto): Promise<void> {
-        const newSystem = SystemEntity.build(input.id!, input.name)
+        const newSystem : SystemEntity = SystemEntity.build(input.id!, input.name)
 
-        await this.execute(newSystem)
+        await this.repository.create(newSystem)
     }
 
 
