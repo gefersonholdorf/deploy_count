@@ -18,8 +18,17 @@ export class PersonRepository implements PersonGateway {
         })
     }
 
-    findById(id: number): Promise<PersonEntity> {
-        throw new Error("Method not implemented.");
+    async findById(id: number): Promise<PersonEntity | null> {
+        const person = await this.prismaClient.person.findFirst({
+            where: {
+                id
+            }
+        })
+
+        return person ? PersonEntity.with({
+            id: person!.id,
+            name: person!.name
+        }) : null
     }
 
     find(): Promise<PersonEntity[]> {

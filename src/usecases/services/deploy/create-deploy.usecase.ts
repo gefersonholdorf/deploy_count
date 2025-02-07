@@ -3,6 +3,7 @@ import { DeployEntity, TypeDeploy } from "../../../domains/deploy/entities/deplo
 import { DeployRepository } from "../../../infra/repositories/deploy/deploy.repository"
 import { UseCase } from "../../usecase"
 import { SystemRepository } from "../../../infra/repositories/system/system.repository"
+import { PersonRepository } from "../../../infra/repositories/person/person.repository"
 
 export interface CreateDeployInputDto {
     id ?: number
@@ -16,16 +17,22 @@ export class CreateDeployService implements UseCase<CreateDeployInputDto, void> 
 
     private constructor(
         private repository : DeployRepository,
-        private systemRepository : SystemRepository
+        private systemRepository : SystemRepository,
+        private personRepository : PersonRepository
     ){}
 
-    public static build(repository : DeployRepository, systemRepository : SystemRepository){
-        return new CreateDeployService(repository,systemRepository)
+    public static build(repository : DeployRepository, systemRepository : SystemRepository, personRepository : PersonRepository){
+        return new CreateDeployService(repository,systemRepository, personRepository)
     }
 
     async execute(input: CreateDeployInputDto): Promise<void> {
-        const newDeploy : DeployEntity = DeployEntity.build(input.id!, input.personId, input.systemId, input.type, input.createdAt!)
-        // Falta implementar validação de Person e SystemS
+        const newDeploy : DeployEntity = DeployEntity.build(input.id!, input.systemId, input.personId, input.type, input.createdAt!)
+        
+        const person = await this.personRepository.findById(input.personId)
+
+        if(!person) {
+            throw new Error('Pessoa não encontrada!')
+        }
 
         const system = await this.systemRepository.findById(input.systemId)
 
