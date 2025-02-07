@@ -12,4 +12,4 @@ const createPersonService = CreatePersonService.build(personRepository)
 
 const createPersonController = CreatePersonController.build(createPersonService)
 
-personRoutes.post('/create-person', (request, response) => createPersonController.handle(request, response))
+personRoutes.post('/create-person', (request, response, next) => createPersonController.handle(request, response, next))

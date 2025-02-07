@@ -1,4 +1,4 @@
-export type TypeDeploy = 'BACK-END' | 'FRONT-END'
+export type TypeDeploy = 'BACK-END' | 'FRONT-END' | 'AMBOS'
 
 export interface DeployProps {
     id ?: number

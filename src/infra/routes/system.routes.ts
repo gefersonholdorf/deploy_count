@@ -12,4 +12,4 @@ const createSystemService = CreateSystemService.build(systemRepository)
 
 const createSystemController = CreateSystemController.build(createSystemService)
 
-systemRoutes.post('/create-system', (request, response) => createSystemController.handle(request, response))
+systemRoutes.post('/create-system', (request, response, next) => createSystemController.handle(request, response, next))

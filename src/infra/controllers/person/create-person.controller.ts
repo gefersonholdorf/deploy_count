@@ -1,4 +1,4 @@
-import { Request, response, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import { CreatePersonService, CreatePersonUseCaseInputDto } from "../../../usecases/services/person/create-person.usecase";
 import { createPersonSchema } from "../../../validations/person/create-person.schema";
 import { Controller } from "../controller";
@@ -12,17 +12,14 @@ export class CreatePersonController implements Controller{
         return new CreatePersonController(createPersonService)
     }
 
-    public async handle(request : Request, response : Response) : Promise<any> {
+    public async handle(request : Request, response : Response, next : NextFunction) : Promise<any> {
         const requestBody = request.body
 
         try {
             createPersonSchema.parse(requestBody)
         } catch (error) {
             console.log(error)
-            return response.status(400).json({
-                error: 'Dados inválidos',
-                details: error
-            })
+            next(error)
         }
 
         const body : CreatePersonUseCaseInputDto = {
@@ -35,7 +32,7 @@ export class CreatePersonController implements Controller{
             response.status(201).json("Pessoa cadastrada com sucesso")
         } catch (error) {
             console.log(error)
-            response.status(500).json('Erro ao criar Pessoa!')
+            next(error)
         }
     }
 }

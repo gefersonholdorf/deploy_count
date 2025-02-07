@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Controller } from "../controller";
 import { CreateDeployInputDto, CreateDeployService } from "../../../usecases/services/deploy/create-deploy.usecase";
 import { createDeploySchema } from "../../../validations/deploy/create-deploy.schema";
@@ -11,17 +11,14 @@ export class CreateDeployController implements Controller {
         return new CreateDeployController(createDeployService)
     }
 
-    async handle(request: Request, response: Response): Promise<any> {
+    async handle(request: Request, response: Response, next : NextFunction): Promise<any> {
         const requestBody = request.body
 
         try {
             createDeploySchema.parse(requestBody)
         } catch (error) {
             console.log(error)
-            return response.status(400).json({
-                error: 'Dados inválidos!',
-                details: error
-            })
+            next(error)
         }
 
         const newDeploy : CreateDeployInputDto = {
@@ -29,14 +26,13 @@ export class CreateDeployController implements Controller {
             systemId: requestBody.systemId,
             type: requestBody.type
         }
-
+        
         try {
             await this.createDeployService.execute(newDeploy)
 
             response.status(201).json('Deploy inserido com sucesso!')
         } catch (error) {
-            console.log(error)
-            response.status(500).json('Erro ao inserir Deploy!')
+            next(error)
         }
     }
 

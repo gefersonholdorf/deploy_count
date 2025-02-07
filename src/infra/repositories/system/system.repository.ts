@@ -18,10 +18,20 @@ export class SystemRepository implements SystemGateway {
         })
     }
 
-    findById(id: number): Promise<SystemEntity> {
-        throw new Error("Method not implemented.");
+    async findById(id: number): Promise<SystemEntity | null> {
+        const system = await this.prismaClient.system.findFirst({
+            where: {
+                id
+            }
+        })
+
+        return system ? SystemEntity.with({
+            id : system!.id,
+            name : system!.name
+        }) : null
     }
-    find(): Promise<SystemEntity[]> {
+
+    async find(): Promise<SystemEntity[]> {
         throw new Error("Method not implemented.");
     }
 
